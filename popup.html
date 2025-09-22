@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            width: 250px;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+            .info {
+                font-size: 12px;
+                color: #666;
+                text-align: center;
+                margin-top: 10px;
+                min-height: 18px;
+            }
+
+        .icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 16px;
+            margin: 0;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .status-text {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background-color: #ccc;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-switch.active {
+            background-color: #4CAF50;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        .description {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="icon">🎵</div>
+        <h1>YouTube Music<br>Auto-Continue</h1>
+    </div>
+
+    <div class="status">
+        <span class="status-text">Auto-Continue</span>
+        <div class="toggle-switch" id="toggle">
+            <div class="toggle-slider"></div>
+        </div>
+    </div>
+
+    <div class="description">
+        Automatically clicks "Yes" when YouTube Music asks "Continue watching?" to prevent your music from pausing.
+    </div>
+
+    <div id="info" class="info" aria-live="polite"></div>
+
+    <div class="footer">
+        v1.0 - Works on music.youtube.com
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

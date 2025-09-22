@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Music Auto-Continue",
+  "version": "1.0",
+  "description": "Automatically clicks 'Yes' on YouTube Music's 'Continue watching?' popup to prevent auto-pause",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://music.youtube.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://music.youtube.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YouTube Music Auto-Continue"
+  }
+}
