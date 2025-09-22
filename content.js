@@ -158,8 +158,10 @@
         // Also check periodically as backup
         setInterval(checkForPopup, 5000);
 
-        // Listen for messages from popup
+        // Listen for messages from popup/background
         chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+            if (!request) return;
+
             if (request.action === 'toggle') {
                 isEnabled = !isEnabled;
                 // Persist the new value
@@ -171,6 +173,17 @@
             } else if (request.action === 'getStatus') {
                 // Return the in-memory value; it's kept in sync with storage on init and toggle
                 sendResponse({enabled: isEnabled});
+            } else if (request.action === 'setEnabled') {
+                // Explicitly set the enabled state (used by background when storage changes)
+                isEnabled = !!request.enabled;
+                console.log('[YouTube Music Auto-Continue] setEnabled received:', isEnabled);
+                // Persist to storage to keep consistent
+                if (chrome && chrome.storage && chrome.storage.local) {
+                    chrome.storage.local.set({enabled: isEnabled});
+                }
+                sendResponse({enabled: isEnabled});
+            } else if (request.action === 'ping') {
+                sendResponse({pong: true});
             }
         });
     }

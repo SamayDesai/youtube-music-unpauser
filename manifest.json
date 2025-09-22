@@ -5,7 +5,9 @@
   "description": "Automatically clicks 'Yes' on YouTube Music's 'Continue watching?' popup to prevent auto-pause",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "tabs",
+    "alarms"
   ],
   "host_permissions": [
     "*://music.youtube.com/*"
@@ -21,6 +23,9 @@
       "run_at": "document_idle"
     }
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_title": "YouTube Music Auto-Continue"

@@ -67,10 +67,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         updateUI(newVal);
                         updateInfo(newVal ? 'Auto-continue enabled' : 'Auto-continue disabled');
 
-                        // Notify content script (injecting if needed)
-                        sendMessageWithInjection(tabs[0].id, {action: 'toggle'}, function(response) {
-                            // response may be null if injection failed; we've already updated storage/UI
-                        });
+                                    // Ask background to toggle for all music.youtube.com tabs (background will update storage and notify tabs)
+                                    chrome.runtime.sendMessage({from: 'popup', action: 'toggleAll'}, function(response) {
+                                        // response may be handled asynchronously by background; UI is already updated
+                                    });
                     });
                 });
             } else {
@@ -85,41 +85,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Helper: try sendMessage; if no listener, inject content.js then retry once
-    function sendMessageWithInjection(tabId, message, callback) {
-        chrome.tabs.sendMessage(tabId, message, function(response) {
-            if (chrome.runtime && chrome.runtime.lastError) {
-                // No listener - inject content script and retry once
-                console.info('[popup] Content script missing, injecting...');
-                updateInfo('Injecting content script...');
-                if (chrome.scripting && chrome.scripting.executeScript) {
-                    chrome.scripting.executeScript({
-                        target: {tabId: tabId},
-                        files: ['content.js']
-                    }, function() {
-                        // After injection, try sending the message again
-                        chrome.tabs.sendMessage(tabId, message, function(response2) {
-                            if (chrome.runtime && chrome.runtime.lastError) {
-                                console.warn('[popup] Still could not contact content script:', chrome.runtime.lastError.message);
-                                updateInfo('Failed to inject content script');
-                                callback(null);
-                                return;
-                            }
-
-                            // Success after injection
-                            updateInfo('Content script injected');
-                            callback(response2 || null);
-                        });
-                    });
-                } else {
-                    console.warn('[popup] scripting.executeScript not available');
-                    updateInfo('Scripting API not available');
-                    callback(null);
-                }
-                return;
+    // Delegate injection/communication responsibilities to the background service worker.
+    // When the popup opens, request the background to ensure content scripts are injected in open music.youtube.com tabs.
+    function ensureInjectedAcrossTabs() {
+        chrome.runtime.sendMessage({from: 'popup', action: 'ensureInjected'}, function(response) {
+            if (response && response.ok) {
+                updateInfo('Content scripts injected in open tabs');
+            } else {
+                // background will try; just inform the user
+                updateInfo('Ensuring content scripts in open music.youtube.com tabs');
             }
-
-            callback(response || null);
         });
     }
 
